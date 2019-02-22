@@ -4,3 +4,6 @@ node_modules
 # doteng environment variables file
 *.env
 .env
+
+# webpack output dir
+dist

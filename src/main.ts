@@ -15,6 +15,8 @@ import { ConfigService } from './config';
 // import { HttpExceptionFilter } from 'core/filters/http-exception.filter';
 // import { ValidationPipe } from '@nestjs/common';
 
+declare const module: any;
+
 async function bootstrap() {
   // 根目录 nest-cnode
   const rootDir = join(__dirname, '..');
@@ -33,9 +35,9 @@ async function bootstrap() {
     prefix: '/public',
   });
   // 指定视图引擎 处理.html后缀文件
-  app.engine('html', ejsMate);
+  app.engine('ejs', ejsMate);
   // 视图引擎
-  app.set('view engine', 'html');
+  app.set('view engine', 'ejs');
   // 配置模板（视图）的基本目录
   app.setBaseViewsDir(join(rootDir, 'views'));
 
@@ -72,5 +74,9 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
   // 启动监听3000端口 浏览器访问 http://localhost:3000
   await app.listen(3000);
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose( () => app.close() );
+  }
 }
 bootstrap();
