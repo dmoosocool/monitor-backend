@@ -85,7 +85,7 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
   // 启动监听3000端口 浏览器访问 http://localhost:3000
   await app.listen(config.getNumber('PORT'), config.get('HOST'), () => {
-    Logger.log(`server is runing at ${config.get('HOST')}:${config.get('PORT')}`);
+    Logger.log(`server is runing at http://${config.get('HOST')}:${config.get('PORT')}`);
   });
 
   if (module.hot) {
