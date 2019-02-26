@@ -34,10 +34,6 @@ export class ConfigValidate {
       REDIS_PASSWORD: Joi.string().empty().default(''),
       // Redis数据库
       REDIS_DB: Joi.number().default(0),
-
-      /** mongodb配置验证 */
-      // mongodb链接
-      MONGODB_URI: Joi.string().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(

@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { Logger } from '@nestjs/common';
 
 import { join } from 'path';
 // import * as cookieParser from 'cookie-parser';
@@ -20,8 +21,17 @@ declare const module: any;
 async function bootstrap() {
   // 根目录 nest-cnode
   const rootDir = join(__dirname, '..');
-  const app = await NestFactory.create(AppModule);
-  app.init();
+
+  /**
+   * cors defualt config.
+   * {
+   * "origin": "*",
+   * "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+   * "preflightContinue": false,
+   * "optionsSuccessStatus": 204
+   * }
+   */
+  const app = await NestFactory.create(AppModule, {cors: true});
   const config: ConfigService<any> = app.get(ConfigService);
 
   // 注意：这个要在express.static之前调用，loader2.0之后要使用loader-connect
@@ -34,6 +44,7 @@ async function bootstrap() {
   app.useStaticAssets(join(rootDir, 'public'), {
     prefix: '/public',
   });
+
   // 指定视图引擎 处理.html后缀文件
   app.engine('ejs', ejsMate);
   // 视图引擎
@@ -73,10 +84,13 @@ async function bootstrap() {
   // // 注册全局http异常过滤器
   // app.useGlobalFilters(new HttpExceptionFilter());
   // 启动监听3000端口 浏览器访问 http://localhost:3000
-  await app.listen(3000);
+  await app.listen(config.getNumber('PORT'), config.get('HOST'), () => {
+    Logger.log(`server is runing at ${config.get('HOST')}:${config.get('PORT')}`);
+  });
+
   if (module.hot) {
     module.hot.accept();
-    module.hot.dispose( () => app.close() );
+    module.hot.dispose(() => app.close());
   }
 }
 bootstrap();
